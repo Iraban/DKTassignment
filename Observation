@@ -1,0 +1,189 @@
+1. Go to root cd /root/
+
+[root@ip-172-31-41-124 ~]# pwd
+/root
+[root@ip-172-31-41-124 ~]# cd /root/
+[root@ip-172-31-41-124 ~]# pwd
+/root
+
+2. git clone https://github.com/ashishrpandey/example-voting-app
+
+[root@ip-172-31-41-124 ~]# git clone https://github.com/ashishrpandey/example-voting-app
+Cloning into 'example-voting-app'...
+remote: Enumerating objects: 494, done.
+remote: Total 494 (delta 0), reused 0 (delta 0), pack-reused 494
+Receiving objects: 100% (494/494), 236.18 KiB | 1.04 MiB/s, done.
+Resolving deltas: 100% (179/179), done.
+[root@ip-172-31-41-124 ~]#
+
+
+
+3. go to /root/example-voting-app/k8s-specifications
+
+[root@ip-172-31-41-124 ~]# pwd
+/root
+[root@ip-172-31-41-124 ~]# cd /root/example-voting-app/k8s-specifications
+[root@ip-172-31-41-124 k8s-specifications]#
+[root@ip-172-31-41-124 k8s-specifications]#
+[root@ip-172-31-41-124 k8s-specifications]# ls
+db-deployment.yaml  redis-deployment.yaml  result-deployment.yaml  vote-deployment.yaml  worker-deployment.yaml
+db-service.yaml     redis-service.yaml     result-service.yaml     vote-service.yaml
+[root@ip-172-31-41-124 k8s-specifications]#
+[root@ip-172-31-41-124 k8s-specifications]#
+[root@ip-172-31-41-124 k8s-specifications]#
+
+
+[root@ip-172-31-41-124 k8s-specifications]#
+[root@ip-172-31-41-124 k8s-specifications]# kubectl apply -f .
+deployment.apps/db created
+service/db created
+deployment.apps/redis created
+service/redis created
+deployment.apps/result created
+service/result created
+deployment.apps/vote created
+service/vote created
+deployment.apps/worker created
+[root@ip-172-31-41-124 k8s-specifications]#
+
+
+5. for voting and result pods, Observe that NodePort is assigned.
+http://
+[root@ip-172-31-41-124 k8s-specifications]# kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+db           ClusterIP   10.105.202.75   <none>        5432/TCP         3m2s
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP          5d
+redis        ClusterIP   10.102.43.250   <none>        6379/TCP         3m2s
+result       NodePort    10.102.208.4    <none>        5001:31001/TCP   3m1s
+vote         NodePort    10.98.179.254   <none>        5000:31000/TCP   3m1s
+[root@ip-172-31-41-124 k8s-specifications]#
+
+6. 
+http://13.214.209.187:31000/
+http://13.214.209.187:31001/
+
+
+7. NONE
+
+
+
+8. Delete and observe
+
+[root@ip-172-31-41-124 k8s-specifications]# cd $home
+[root@ip-172-31-41-124 ~]# ls
+example-voting-app  kubernetes-training
+[root@ip-172-31-41-124 ~]# cd example-voting-app/
+[root@ip-172-31-41-124 example-voting-app]# ls
+architecture.png  docker-compose-javaworker.yml  docker-compose.yml  k8s-specifications  MAINTAINERS  result  worker
+dockercloud.yml   docker-compose-simple.yml      docker-stack.yml    LICENSE             README.md    vote
+[root@ip-172-31-41-124 example-voting-app]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-72sbx        1/1     Running   0          30m
+kubia-manual              1/1     Running   0          4d
+kubia-manual-meghana      1/1     Running   0          4d
+kubia-manual-v2-meghana   1/1     Running   0          4d
+kubia2-meghana-2zbks      1/1     Running   0          3d2h
+kubia2-meghana-fl796      1/1     Running   0          3d2h
+kubia2-meghana-q6qmq      1/1     Running   0          3d2h
+redis-868d64d78-4js6q     1/1     Running   0          30m
+result-5d57b59f4b-p9vzs   1/1     Running   0          30m
+vote-94849dc97-cbp8w      1/1     Running   0          30m
+worker-dd46d7584-qsxbx    1/1     Running   0          30m
+[root@ip-172-31-41-124 example-voting-app]# kubectl delete po vote-94849dc97-cbp8w
+pod "vote-94849dc97-cbp8w" deleted
+
+[root@ip-172-31-41-124 example-voting-app]#
+[root@ip-172-31-41-124 example-voting-app]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-72sbx        1/1     Running   0          31m
+kubia-manual              1/1     Running   0          4d
+kubia-manual-meghana      1/1     Running   0          4d
+kubia-manual-v2-meghana   1/1     Running   0          4d
+kubia2-meghana-2zbks      1/1     Running   0          3d2h
+kubia2-meghana-fl796      1/1     Running   0          3d2h
+kubia2-meghana-q6qmq      1/1     Running   0          3d2h
+redis-868d64d78-4js6q     1/1     Running   0          31m
+result-5d57b59f4b-p9vzs   1/1     Running   0          31m
+vote-94849dc97-dc2sx      1/1     Running   0          39s
+worker-dd46d7584-qsxbx    1/1     Running   0          31m
+[root@ip-172-31-41-124 example-voting-app]#
+
+
+redis-868d64d78-4js6q     1/1     Running   0          31m
+result-5d57b59f4b-p9vzs   1/1     Running   0          31m
+vote-94849dc97-dc2sx      1/1     Running   0          39s
+worker-dd46d7584-qsxbx    1/1     Running   0          31m
+[root@ip-172-31-41-124 example-voting-app]# kubectl delete po worker-dd46d7584-qsxbx
+pod "worker-dd46d7584-qsxbx" deleted
+
+
+
+^C
+[root@ip-172-31-41-124 example-voting-app]# kubectl get po
+NAME                      READY   STATUS        RESTARTS   AGE
+db-b54cd94f4-72sbx        1/1     Running       0          35m
+kubia-manual              1/1     Running       0          4d1h
+kubia-manual-meghana      1/1     Running       0          4d
+kubia-manual-v2-meghana   1/1     Running       0          4d
+kubia2-meghana-2zbks      1/1     Running       0          3d2h
+kubia2-meghana-fl796      1/1     Running       0          3d2h
+kubia2-meghana-q6qmq      1/1     Running       0          3d2h
+redis-868d64d78-4js6q     1/1     Running       0          35m
+result-5d57b59f4b-p9vzs   1/1     Running       0          35m
+vote-94849dc97-dc2sx      1/1     Running       0          3m49s
+worker-dd46d7584-q9jsj    1/1     Running       0          31s
+worker-dd46d7584-qsxbx    1/1     Terminating   0          35m
+
+
+[root@ip-172-31-41-124 example-voting-app]# kubectl delete po db-b54cd94f4-72sbx
+pod "db-b54cd94f4-72sbx" deleted
+^C
+[root@ip-172-31-41-124 example-voting-app]# kubectl get po
+NAME                      READY   STATUS        RESTARTS   AGE
+db-b54cd94f4-72sbx        1/1     Terminating   0          37m
+db-b54cd94f4-vr22f        1/1     Running       0          8s
+kubia-manual              1/1     Running       0          4d1h
+kubia-manual-meghana      1/1     Running       0          4d
+kubia-manual-v2-meghana   1/1     Running       0          4d
+kubia2-meghana-2zbks      1/1     Running       0          3d2h
+kubia2-meghana-fl796      1/1     Running       0          3d2h
+kubia2-meghana-q6qmq      1/1     Running       0          3d2h
+redis-868d64d78-4js6q     1/1     Running       0          37m
+result-5d57b59f4b-p9vzs   1/1     Running       0          37m
+vote-94849dc97-dc2sx      1/1     Running       0          6m11s
+worker-dd46d7584-q9jsj    1/1     Running       0          2m53s
+
+
+[root@ip-172-31-41-124 example-voting-app]#
+[root@ip-172-31-41-124 example-voting-app]# kubectl get po
+NAME                      READY   STATUS        RESTARTS   AGE
+db-b54cd94f4-72sbx        0/1     Terminating   0          37m
+db-b54cd94f4-vr22f        1/1     Running       0          31s
+kubia-manual              1/1     Running       0          4d1h
+kubia-manual-meghana      1/1     Running       0          4d
+kubia-manual-v2-meghana   1/1     Running       0          4d
+kubia2-meghana-2zbks      1/1     Running       0          3d2h
+kubia2-meghana-fl796      1/1     Running       0          3d2h
+kubia2-meghana-q6qmq      1/1     Running       0          3d2h
+redis-868d64d78-4js6q     1/1     Running       0          37m
+result-5d57b59f4b-p9vzs   1/1     Running       0          37m
+vote-94849dc97-dc2sx      1/1     Running       0          6m34s
+worker-dd46d7584-q9jsj    0/1     Error         0          3m16s
+[root@ip-172-31-41-124 example-voting-app]#
+
+
+[root@ip-172-31-41-124 example-voting-app]# kubectl get po
+NAME                      READY   STATUS        RESTARTS   AGE
+db-b54cd94f4-vr22f        1/1     Running       0          2m54s
+kubia-manual              1/1     Running       0          4d1h
+kubia-manual-meghana      1/1     Running       0          4d
+kubia-manual-v2-meghana   1/1     Running       0          4d
+kubia2-meghana-2zbks      1/1     Running       0          3d2h
+kubia2-meghana-fl796      1/1     Running       0          3d2h
+kubia2-meghana-q6qmq      1/1     Running       0          3d2h
+redis-868d64d78-4js6q     1/1     Running       0          40m
+result-5d57b59f4b-p9vzs   1/1     Running       0          40m
+vote-94849dc97-dc2sx      1/1     Running       0          8m57s
+worker-dd46d7584-86kwh    1/1     Running       0          33s
+worker-dd46d7584-q9jsj    0/1     Terminating   1          5m39s
+[root@ip-172-31-41-124 example-voting-app]#
