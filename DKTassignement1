@@ -1,0 +1,5 @@
+Write a common use-case, where you will use a daemon set instead of replica set.
+Ans:
+Replica Set is good for transactions, where if one pods gets deleted, it is automaically created. 
+Daemon Set is good for background activities like monitoring or logs collection, which needs to be continuously running without any intervention.
+Hence for all background activities, better to open daemon set.
