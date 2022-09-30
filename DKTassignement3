@@ -1,0 +1,28 @@
+Services
+
+Q: You have deployed an application, that is listening at port 8000. 
+You used a replica-set to deploy it and created a NodePort service to make it accessible. 
+But when you test it, somehow the application is not reachable at the port. 
+Write down your approach and sequentially all the steps that you will take to find out the issue.
+
+Ans:
+Check the port type:
+
+Application will be reachable if the port is given as NodePort, and the <IPAddress:PortNum> set is correct.
+
+1st check the port.
+[root@ip-172-31-41-124 05-services]# kubectl get svc
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP        26m
+kubia-nodeport   NodePort    10.96.240.28   <none>        80:30123/TCP   24s
+[root@ip-172-31-41-124 05-services]# kubectl get ep
+NAME             ENDPOINTS                                                     AGE
+kubernetes       172.31.41.124:6443                                            26m
+kubia-nodeport   192.168.49.158:8080,192.168.49.159:8080,192.168.49.160:8080   47s
+
+If it is NodePort is correct, take the corresponding port number 
+
+In above it is 30123.
+
+Ensure the IPAddress:PortAddress is correct.
+
